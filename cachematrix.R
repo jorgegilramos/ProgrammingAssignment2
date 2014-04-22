@@ -56,3 +56,14 @@ cacheSolve <- function(x, ...) {
   # Return the calculated inverse
   inverseMatrix
 }
+
+
+# Practical example
+mdat <- matrix(c(1, 2, 11, 12), nrow = 2, ncol = 2)
+matrix1 <- makeCacheMatrix(mdat)
+cacheSolve(matrix1)
+cacheSolve(matrix1)
+
+# Checking errors
+makeCacheMatrix(c(1))                                   # Error: matrix expected
+makeCacheMatrix(matrix(c(1,2,3,4,5,6), nrow=2, ncol=3)) # Error: only square matrices

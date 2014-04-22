@@ -1,15 +1,58 @@
-## Put comments here that give an overall description of what your
-## functions do
+#
+# Caching the Inverse of a Matrix
+#
+# Matrix inversion is usually a costly computation and their may be some benefit to caching the 
+# inverse of a matrix rather than compute it repeatedly.
+#
+# Functions:
+#
+# 1.- makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
+# 2.- cacheSolve: This function computes the inverse of the special "matrix" returned by makeCacheMatrix.
+#     If the inverse has already been calculated (and the matrix has not changed), then the cachesolve will
+#     retrieve the inverse from the cache.
+#
 
-## Write a short comment describing this function
-
+# Create the wrapper makeCacheMatrix function which encapsulate the list of methods defined
+# to be used in the cacheSolve function (set, get, setinverse and getinverse)
 makeCacheMatrix <- function(x = matrix()) {
-
+  # Checking some errors
+  if(!is.matrix(x)){
+    stop("matrix expected")
+  }
+  if(nrow(x) != ncol(x)){ 
+    stop("only square matrices can be inverted")
+  }
+  
+  inverseMatrix <- NULL
+  set <- function(newMatrix) {
+    x <<- newMatrix
+    inverseMatrix <<- NULL
+  }
+  
+  get <- function() x
+  setinverse <- function(inverse) inverseMatrix <<- inverse
+  getinverse <- function() inverseMatrix
+  # Return the list of methods
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
-
-## Write a short comment describing this function
-
+# Solve the inverse of a square matrix
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  # Checking if the inverse matrix is in cache
+  inverseMatrix <- x$getinverse()
+  if(!is.null(inverseMatrix)) {
+    message("getting cached inverse matrix")
+    # return the cached matrix
+    return(inverseMatrix)
+  }
+  
+  # Calculate the inverse matrix (usually a long time operation ...)
+  data <- x$get()
+  inverseMatrix <- solve(data, ...)
+  x$setinverse(inverseMatrix)
+  
+  # Return the calculated inverse
+  inverseMatrix
 }
